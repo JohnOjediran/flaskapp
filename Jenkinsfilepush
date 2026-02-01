@@ -4,7 +4,7 @@ pipeline {
     environment {
         // Change these values according to your project
         DOCKERHUB_REPO = "docker push johnojj/my-flask-app"     //dockerhub username + repo name
-        DOCKER_CREDENTIALS_ID = "dockerhub-credentials"  //  match Jenkins credential ID
+        DOCKER_CREDENTIALS_ID = "dockerhub-credentials"  //  match Jenkins credential ID created in Jenkins
         IMAGE_TAG = "latest"                    // or use 'latest'
     }
 
