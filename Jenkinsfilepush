@@ -35,7 +35,6 @@ pipeline {
 
         stage('Push Image to Docker Hub') {
             steps {
-                sh "docker push ${DOCKERHUB_REPO}:${IMAGE_TAG}"
                 sh "docker push ${DOCKERHUB_REPO}:latest"
             }
         }
