@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+
+    environment {
+        // Change these values according to your project
+        DOCKERHUB_REPO = "docker push johnojj/my-flask-app"     //dockerhub username + repo name
+        DOCKER_CREDENTIALS_ID = "dockerhub-credentials"  //  match Jenkins credential ID
+        IMAGE_TAG = "latest"                    // or use 'latest'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh "docker build -t ${DOCKERHUB_REPO}:${IMAGE_TAG} ."
+                sh "docker tag ${DOCKERHUB_REPO}:${IMAGE_TAG} ${DOCKERHUB_REPO}:latest"
+            }
+        }
+
+        stage('Login to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: DOCKER_CREDENTIALS_ID,
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                }
+            }
+        }
+
+        stage('Push Image to Docker Hub') {
+            steps {
+                sh "docker push ${DOCKERHUB_REPO}:${IMAGE_TAG}"
+                sh "docker push ${DOCKERHUB_REPO}:latest"
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker logout'
+        }
+    }
+}
