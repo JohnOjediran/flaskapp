@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                // Pull code from GitHub
+                git url: 'https://github.com/JohnOjediran/flaskapp.git', branch: 'main'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'echo "building the app"'
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                sh 'echo "running test"'
+            }
+        }
+        
+        stage('Deploy') {
+            steps {
+                sh 'echo "deploying"'
+            }
+        }
+    }
+    
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
